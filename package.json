@@ -2,13 +2,13 @@
   "name": "bpmn-groovy-coder",
   "displayName": "BPMN Groovy Coder",
   "description": "WIP: edit groovy script directly from vscode, with full language support.",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "license": "MIT",
   "publisher": "alexNeto",
   "engines": {
     "vscode": "^1.64.0"
   },
-  "icon": "logo.png",
+  "icon": "resources/logo.png",
   "galleryBanner": {
     "color": "#1d1c1a",
     "theme": "dark"
@@ -22,7 +22,7 @@
     "Snippets"
   ],
   "activationEvents": [
-    "onCommand:bpmn-coder.helloWorld",
+    "onCommand:bpmn-coder.deploy",
     "onLanguage:bpmn"
   ],
   "main": "./dist/extension.js",
@@ -41,6 +41,25 @@
         ]
       }
     ],
+    "commands": [
+      {
+        "command": "bpmn-coder.deploy",
+        "title": "Deploy BPMN",
+        "icon": {
+          "light": "resources/upload-icon-dark.svg",
+          "dark": "resources/upload-icon-light.svg"
+        }
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "when": "resourceLangId == bpmn",
+          "command": "bpmn-coder.deploy",
+          "group": "navigation"
+        }
+      ]
+    },
     "grammars": [
       {
         "language": "bpmn",
@@ -77,19 +96,23 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.64.0",
     "@types/glob": "^7.2.0",
     "@types/mocha": "^9.1.0",
-    "@types/node": "14.x",
+    "@types/node": "^14.18.12",
+    "@types/node-fetch": "^2.6.1",
+    "@types/vscode": "^1.64.0",
     "@typescript-eslint/eslint-plugin": "^5.12.1",
     "@typescript-eslint/parser": "^5.12.1",
+    "@vscode/test-electron": "^2.1.2",
     "eslint": "^8.9.0",
     "glob": "^7.2.0",
     "mocha": "^9.2.1",
-    "typescript": "^4.5.5",
     "ts-loader": "^9.2.6",
+    "typescript": "^4.5.5",
     "webpack": "^5.69.1",
-    "webpack-cli": "^4.9.2",
-    "@vscode/test-electron": "^2.1.2"
+    "webpack-cli": "^4.9.2"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.7"
   }
 }

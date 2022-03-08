@@ -6,6 +6,8 @@
     "sourceMap": true,
     "rootDir": "src/",
     "strict": true,
+    "typeRoots": ["node_modules/@types"],
     "noUnusedParameters": true
-  }
+  },
+  "exclude": ["node_modules", ".vscode-test"]
 }
