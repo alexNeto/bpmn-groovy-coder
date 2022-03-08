@@ -2,11 +2,16 @@
   "name": "bpmn-groovy-coder",
   "displayName": "BPMN Groovy Coder",
   "description": "WIP: edit groovy script directly from vscode, with full language support.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "publisher": "alexNeto",
   "engines": {
     "vscode": "^1.64.0"
+  },
+  "icon": "logo.png",
+  "galleryBanner": {
+    "color": "#1d1c1a",
+    "theme": "dark"
   },
   "repository": {
     "type": "git",

@@ -4,6 +4,9 @@ All notable changes to the "bpmn-coder" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### [0.1.1] - 2022-03-07
+Add Icon to the extension
+
 ### [0.1.0] - 2022-03-07
 Add snippets for groovy scripts
 
