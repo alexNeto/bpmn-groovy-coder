@@ -22,7 +22,7 @@
     "Snippets"
   ],
   "activationEvents": [
-    "onCommand:bpmn-coder.helloWorld",
+    "onCommand:bpmn-coder.deploy",
     "onLanguage:bpmn"
   ],
   "main": "./dist/extension.js",
@@ -41,6 +41,25 @@
         ]
       }
     ],
+    "commands": [
+      {
+        "command": "bpmn-coder.deploy",
+        "title": "Deploy BPMN",
+        "icon": {
+          "light": "resources/upload-icon-dark.svg",
+          "dark": "resources/upload-icon-light.svg"
+        }
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "when": "resourceLangId == bpmn",
+          "command": "bpmn-coder.deploy",
+          "group": "navigation"
+        }
+      ]
+    },
     "grammars": [
       {
         "language": "bpmn",
