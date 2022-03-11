@@ -7,9 +7,9 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### [0.2.0] - 2022-03-10
 
 - Add a button to deploy the BPMN from the VS Code
-- Add a button in the top left corner called `Deploy BPMN`
-- Add a input dialog to insert the camunda **URL**. i.g.: `http://localhost:8080/engine-rest`
-- Add localStorage capabilities to store the last URL
+    - Add a button in the top left corner called `Deploy BPMN`
+    - Add a input dialog to insert the camunda **URL**. i.g.: `http://localhost:8080/engine-rest`
+    - Add localStorage capabilities to store the last URL
 
 ### [0.1.1] - 2022-03-07
 
