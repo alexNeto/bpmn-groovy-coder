@@ -3,6 +3,7 @@ import { MimeType } from "../../enum/mime-type.enum";
 import { HttpService } from "../http.service";
 import { CreateRequestBody } from "./interfaces/create/create-request-body.interface";
 
+// @ts-ignore
 const FormData = require("form-data");
 
 export class CamundaDeploymentService {
