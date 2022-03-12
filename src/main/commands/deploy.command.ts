@@ -17,7 +17,7 @@ export class DeployCommand {
   private camundaDeploymentService: CamundaDeploymentService;
 
   constructor(private context: Memento) {
-    this.localStorage = new LocalStorageService(context);
+    this.localStorage = new LocalStorageService(this.context);
     this.textDocumentService = new TextDocumentService();
     this.hashService = new HashService();
     this.bpmnMetadataService = new BPMNMetadataService();
@@ -33,15 +33,19 @@ export class DeployCommand {
         placeHolder: "Camunda URL",
         value: this.localStorage.getValue(StorageKeys.deploymentUrl),
       })
-      .then(this.camundaUrlHandler, this.errorHandler);
+      .then(
+        (camundaUrl) => this.camundaUrlHandler(camundaUrl),
+        (error) => this.errorHandler(error)
+      );
   }
 
   private camundaUrlHandler(camundaUrl?: string) {
-    this.textDocumentService
-      .openActiveTextDocument()
-      .then((textDocument: TextDocument) => {
+    this.textDocumentService.openActiveTextDocument().then(
+      (textDocument: TextDocument) => {
         this.makeDeployment(camundaUrl!, textDocument);
-      }, this.errorHandler);
+      },
+      (error) => this.errorHandler(error)
+    );
     this.localStorage.setValue(StorageKeys.deploymentUrl, camundaUrl);
   }
 
@@ -58,6 +62,7 @@ export class DeployCommand {
   private getProcessId(textDocument: TextDocument): string {
     return this.bpmnMetadataService.getProcessId(textDocument.getText());
   }
+
   private getCreateDeploymentPayload(
     processId: string,
     textDocument: TextDocument

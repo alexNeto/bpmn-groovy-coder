@@ -3,7 +3,6 @@ import { MimeType } from "../../enum/mime-type.enum";
 import { HttpService } from "../http.service";
 import { CreateRequestBody } from "./interfaces/create/create-request-body.interface";
 
-// @ts-ignore
 const FormData = require("form-data");
 
 export class CamundaDeploymentService {
@@ -11,8 +10,6 @@ export class CamundaDeploymentService {
 
   public create(url: string, createRequest: CreateRequestBody) {
     const form = new FormData();
-    console.log(createRequest.deploymentActivationTime);
-    console.log(createRequest);
 
     form.append("deployment-name", createRequest.deploymentName);
 
