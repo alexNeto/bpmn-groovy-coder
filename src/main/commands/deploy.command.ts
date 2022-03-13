@@ -1,15 +1,22 @@
-import { Memento, TextDocument, window } from "vscode";
-import { StorageKeys } from "../enum/storage-keys.enum";
+import {
+  InputBoxOptions,
+  Memento,
+  QuickPickOptions,
+  TextDocument,
+  window
+} from "vscode";
+import { ErrorsMessage } from "../enum/errors-message.enum";
+import { Literals } from "../enum/literals.enum";
 import { BPMNMetadataService } from "../services/bpmn-metadata.service";
 import { CamundaDeploymentService } from "../services/camunda-api/camunda-deployment.service";
 import { CreateRequestBody } from "../services/camunda-api/interfaces/create/create-request-body.interface";
+import { CamundaUrlService } from "../services/camunda-url.service";
 import { HashService } from "../services/hash.service";
 import { HttpService } from "../services/http.service";
-import { LocalStorageService } from "../services/local-storage.service";
 import { TextDocumentService } from "../services/text-document.service";
 
 export class DeployCommand {
-  private localStorage: LocalStorageService;
+  private camundaUrlservice: CamundaUrlService;
   private textDocumentService: TextDocumentService;
   private hashService: HashService;
   private bpmnMetadataService: BPMNMetadataService;
@@ -17,7 +24,7 @@ export class DeployCommand {
   private camundaDeploymentService: CamundaDeploymentService;
 
   constructor(private context: Memento) {
-    this.localStorage = new LocalStorageService(this.context);
+    this.camundaUrlservice = new CamundaUrlService(this.context);
     this.textDocumentService = new TextDocumentService();
     this.hashService = new HashService();
     this.bpmnMetadataService = new BPMNMetadataService();
@@ -28,25 +35,69 @@ export class DeployCommand {
   }
 
   public deploy() {
-    window
-      .showInputBox({
-        placeHolder: "Camunda URL",
-        value: this.localStorage.getValue(StorageKeys.deploymentUrl),
-      })
-      .then(
-        (camundaUrl) => this.camundaUrlHandler(camundaUrl),
-        (error) => this.errorHandler(error)
-      );
+    const items: string[] = this.camundaUrlservice.getValues();
+    const options: QuickPickOptions = {
+      title: Literals.camundaUrlPlaceholder,
+      placeHolder: this.camundaUrlservice.getFirstUrl(),
+      ignoreFocusOut: true,
+    };
+    window.showQuickPick(items, options).then(
+      (camundaUrl) => this.camundaUrlHandler(camundaUrl),
+      (error) => this.errorHandler(error)
+    );
+  }
+
+  public deployNewValue() {
+    const options: InputBoxOptions = {
+      title: Literals.camundaUrlPlaceholder,
+      placeHolder: Literals.camundaUrlPlaceholder,
+      ignoreFocusOut: true,
+    };
+    window.showInputBox(options).then(
+      (camundaUrl) => this.camundaUrlHandler(camundaUrl!),
+      (error) => this.errorHandler(error)
+    );
   }
 
   private camundaUrlHandler(camundaUrl?: string) {
-    this.textDocumentService.openActiveTextDocument().then(
-      (textDocument: TextDocument) => {
-        this.makeDeployment(camundaUrl!, textDocument);
-      },
-      (error) => this.errorHandler(error)
-    );
-    this.localStorage.setValue(StorageKeys.deploymentUrl, camundaUrl);
+    if (this.isCamundaUrlNotEmpty(camundaUrl)) {
+      if (camundaUrl === Literals.newUrl) {
+        this.deployNewValue();
+      } else if (camundaUrl === Literals.cleanUrlList) {
+        this.cleanCamundaUrl();
+      } else if (this.isCamundaUrlValid(camundaUrl!)) {
+        this.textDocumentService.openActiveTextDocument().then(
+          (textDocument: TextDocument) => {
+            this.makeDeployment(camundaUrl!, textDocument);
+          },
+          (error) => this.errorHandler(error)
+        );
+      }
+    } else {
+      this.errorHandler(ErrorsMessage.deploymentError);
+    }
+  }
+
+  private cleanCamundaUrl() {
+    this.camundaUrlservice.clean();
+    window.showInformationMessage("Camunda url list was deleted succesfull");
+  }
+
+  private isCamundaUrlValid(url: string): boolean {
+    if (url.match(/(http|https):\/\//) === null) {
+      this.errorHandler(ErrorsMessage.missingHttpProtocol);
+      return false;
+    }
+
+    if (url.lastIndexOf("/") === url.length - 1) {
+      this.errorHandler(ErrorsMessage.slashEndingUrl);
+      return false;
+    }
+    return true;
+  }
+
+  private isCamundaUrlNotEmpty(camundaUrl?: string): boolean {
+    return camundaUrl !== null && camundaUrl !== undefined && camundaUrl !== "";
   }
 
   private makeDeployment(camundaUrl: string, textDocument: TextDocument) {
@@ -56,7 +107,22 @@ export class DeployCommand {
       textDocument
     );
 
-    this.camundaDeploymentService.create(camundaUrl, deploymentPayload);
+    this.camundaDeploymentService
+      .create(camundaUrl, deploymentPayload)
+      .then((data) => this.camundaDeploymentResponseHandler(camundaUrl, data))
+      .catch((_) => {
+        window.showErrorMessage(ErrorsMessage.requestError);
+        throw new Error(ErrorsMessage.requestError);
+      });
+  }
+
+  private camundaDeploymentResponseHandler(camundaUrl: string, data: any) {
+    if (data.name) {
+      window.showInformationMessage(`${data.name} was deployed succesfully`);
+      this.camundaUrlservice.select(camundaUrl!);
+    } else {
+      throw new Error();
+    }
   }
 
   private getProcessId(textDocument: TextDocument): string {
@@ -79,6 +145,6 @@ export class DeployCommand {
   }
 
   private errorHandler(error: any) {
-    window.showErrorMessage(`Error ${error}`);
+    window.showErrorMessage(`${error}`);
   }
 }

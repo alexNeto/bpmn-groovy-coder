@@ -4,9 +4,10 @@ All notable changes to the "bpmn-coder" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-### [unreleased] - 2022-03-12
+### [0.3.0] - 2022-03-13
 
-- Refactoring deploy command. - 0.2.1
+- Refactoring deploy command
+- Add Selection for used BPMN Deployment
 
 ### [0.2.0] - 2022-03-10
 

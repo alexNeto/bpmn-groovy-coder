@@ -8,7 +8,7 @@ const FORM_DATA = require("form-data");
 export class CamundaDeploymentService {
   constructor(private httpService: HttpService) {}
 
-  public create(url: string, createRequest: CreateRequestBody) {
+  public create(url: string, createRequest: CreateRequestBody): Promise<any> {
     const form = new FORM_DATA();
 
     form.append("deployment-name", createRequest.deploymentName);
@@ -46,6 +46,6 @@ export class CamundaDeploymentService {
       form.append("tenant-id", createRequest.tenantId);
     }
 
-    this.httpService.post(`${url}/${CamundaApi.createDeployment}`, form);
+    return this.httpService.post(`${url}/${CamundaApi.createDeployment}`, form);
   }
 }
