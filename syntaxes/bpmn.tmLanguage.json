@@ -2,16 +2,45 @@
   "scopeName": "source.bpmn",
   "patterns": [
     {
-      "begin": "<bpmn:script>",
-      "end": "</bpmn:script>",
+      "include": "#groovy-task"
+    },
+    {
+      "include": "#groovy"
+    },
+    {
+      "include": "text.xml"
+    }
+  ],
+  "repository": {
+    "groovy": {
+      "begin": "<\\w+:script\\w*\\s*\\w*=\"groovy\">",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.tag.xml" }
+      },
+      "end": "<\\/\\w+\\:script>",
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.tag.xml" }
+      },
       "patterns": [
         {
           "include": "source.groovy"
         }
       ]
     },
-    {
-      "include": "text.xml"
+    "groovy-task": {
+      "begin": "(?!<bpmn:script\\w*[\\w*=\"\\w*\"\\s*]*\\w*=\"groovy\">)\\s*([<\\w*:(incoming|outgoing)>\\w*</\\w*:(incoming|outgoing)>\\s+]*)<bpmn:script>",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.tag.xml" }
+      },
+      "end": "<\\/\\w+\\:script>",
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.tag.xml" }
+      },
+      "patterns": [
+        {
+          "include": "source.groovy"
+        }
+      ]
     }
-  ]
+  }
 }

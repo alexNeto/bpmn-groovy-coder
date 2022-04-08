@@ -4,10 +4,12 @@ All notable changes to the "bpmn-coder" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-### [unreleased] - 2022-03-13
+### [0.3.4] - 2022-03-13
 
 - Remove unused files
-- Updare README.md
+- Fix conflict with XML syntax
+- Fix groovy highlight for camunda:script
+- Update README.md
 
 ### [0.3.0] - 2022-03-13
 
